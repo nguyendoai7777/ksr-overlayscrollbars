@@ -1,9 +1,4 @@
-import {
-  inject,
-  Injectable,
-  makeEnvironmentProviders,
-  Provider,
-} from '@angular/core';
+import { Injectable, makeEnvironmentProviders } from '@angular/core';
 import {
   EventListeners,
   OverlayScrollbars,
@@ -14,9 +9,6 @@ import {
 export class OverlayScrollbarInitWithBody {
   instance: ReturnType<typeof OverlayScrollbars> | null = null;
 
-  constructor() {
-    console.log(`OverlayScrollbarInitWithBody`);
-  }
   init(options: PartialOptions, eventListeners?: EventListeners) {
     if (!this.instance) {
       this.instance = OverlayScrollbars(document.body, options, eventListeners);
@@ -24,6 +16,8 @@ export class OverlayScrollbarInitWithBody {
     return this.instance;
   }
 }
+
+let _instance: OverlayScrollbarInitWithBody | null = null;
 
 /**
  * @usage apply scrollbar for body
@@ -34,24 +28,14 @@ export const provideInitOverlayScrollbarWithBody = (
   options: PartialOptions = {},
   eventListeners?: EventListeners
 ) => {
+  document
+    .querySelector('html')!
+    .setAttribute('data-overlayscrollbars-initialize', '');
+  document.body.setAttribute('data-overlayscrollbars-initialize', '');
+  if (!_instance) {
+    _instance = new OverlayScrollbarInitWithBody();
+  }
+  _instance.init(options, eventListeners);
 
-
-  const providers: Provider[] = [
-    {
-      provide: OverlayScrollbarInitWithBody,
-      useFactory: () => {
-        const service = inject(OverlayScrollbarInitWithBody);
-        console.log(`provideInitOverlayScrollbarWithBody`, service);
-        console.log(`useFactory`);
-        document
-          .querySelector('html')!
-          .setAttribute('data-overlayscrollbars-initialize', '');
-        document.body.setAttribute('data-overlayscrollbars-initialize', '');
-        service.init(options, eventListeners);
-        return service;
-      },
-    },
-  ];
-  console.log(providers);
-  return makeEnvironmentProviders(providers);
+  return makeEnvironmentProviders([]);
 };

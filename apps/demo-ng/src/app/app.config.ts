@@ -9,7 +9,11 @@ import { provideInitOverlayScrollbarWithBody } from 'ksr-scrollable/ng-scrollabl
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideInitOverlayScrollbarWithBody({}),
+    provideInitOverlayScrollbarWithBody({
+      scrollbars: {
+        autoHide: 'leave',
+      }
+    }),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),

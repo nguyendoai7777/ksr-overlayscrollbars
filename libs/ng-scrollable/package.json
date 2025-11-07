@@ -1,0 +1,10 @@
+{
+  "name": "ksr-scrollable/ng-scrollable",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": ">=20.0.0",
+    "@angular/core": ">=20.0.0",
+    "overlayscrollbars": ">=2.12.0"
+  },
+  "sideEffects": false
+}

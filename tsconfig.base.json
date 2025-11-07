@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "ksr-scrollable/ng-scrollable": ["libs/ng-scrollable/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

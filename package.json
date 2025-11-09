@@ -6,7 +6,8 @@
     "test": "nx test ng-scrollable",
     "ng": "nx serve demo-ng",
     "resl": "npm uninstall @nx/eslint @nx/eslint-plugin @eslint/js @typescript-eslint/utils angular-eslint eslint eslint-config-prettier jsonc-eslint-parser typescript-eslint zone.js",
-    "p": "npm i @swc/core@1.14.0 overlayscrollbars"
+    "p": "npm i @swc/core@1.14.0 overlayscrollbars",
+    "b:ng": "nx build ng-scrollable"
   },
   "private": true,
   "dependencies": {

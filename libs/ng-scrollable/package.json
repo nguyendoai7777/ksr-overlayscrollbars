@@ -1,5 +1,5 @@
 {
-  "name": "ksr-scrollable/ng-scrollable",
+  "name": "ng-scrollable",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/common": ">=20.0.0",

@@ -1,6 +1,12 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OverlayScrollbarDestroyed, OverlayScrollbarInitialized, OverlayScrollbarsComponent, OverlayScrollbarScroll, OverlayScrollbarUpdated } from 'ksr-scrollable/ng-scrollable';
+import {
+  OverlayScrollbarDestroyed,
+  OverlayScrollbarInitialized,
+  OverlayScrollbarsComponent,
+  OverlayScrollbarScroll,
+  OverlayScrollbarUpdated,
+} from 'ng-scrollable';
 import { OverlayScrollbars } from 'overlayscrollbars';
 
 @Component({
@@ -15,7 +21,7 @@ export class NxWelcome {
     console.log(instance, event);
   }
 
-  protected onScroll($event: OverlayScrollbarScroll) { }
+  protected onScroll($event: OverlayScrollbarScroll) {}
   protected osInitialized($event: OverlayScrollbarInitialized) {}
   protected osDestroyed($event: OverlayScrollbarDestroyed) {}
   protected osUpdated($event: OverlayScrollbarUpdated) {}

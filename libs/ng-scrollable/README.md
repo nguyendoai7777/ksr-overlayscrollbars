@@ -26,7 +26,7 @@ or can import in `angular.json/targets/build/styles`
 The main entry point is the `OverlayScrollbarsComponent` which can be used in your application as a component:
 
 ```ts
-import { OverlayScrollbarsComponent } from "ksr-scrollable/ng-scrollable";
+import { OverlayScrollbarsComponent } from "ng-scrollable";
 @Component({
   selector: ``,
   imports: [OverlayScrollbarsComponent],
@@ -80,7 +80,7 @@ Additionally to the `events` property the `OverlayScrollbarsComponent` emits "na
 ```
 
 ```ts
-import { OverlayScrollbarDestroyed, OverlayScrollbarInitialized, OverlayScrollbarsComponent, OverlayScrollbarScroll, OverlayScrollbarUpdated } from 'ksr-scrollable/ng-scrollable';
+import { OverlayScrollbarDestroyed, OverlayScrollbarInitialized, OverlayScrollbarsComponent, OverlayScrollbarScroll, OverlayScrollbarUpdated } from 'ng-scrollable';
 @Component({
   templateUrl: `your.component.html`,
   imports: [OverlayScrollbarsComponent]
@@ -107,7 +107,7 @@ The ref object has two properties:
 In case the `OverlayScrollbarsComponent` is not enough, you can also use the `OverlayScrollbarsDirective` directive:
 
 ```js
-import { OverlayScrollbarsDirective } from "ksr-scrollable/ng-scrollable";
+import { OverlayScrollbarsDirective } from "ng-scrollable";
 ```
 
 ```html

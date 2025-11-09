@@ -1,10 +1,26 @@
 {
   "name": "ng-scrollable",
   "version": "1.0.0",
+  "description": "custom scrollbar for Angular",
+  "author": "nguyendoai7777",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nguyendoai7777/ksr-overlayscrollbars.git",
+    "directory": "libs/ng-scrollable"
+  },
+  "keywords": [
+    "custom scrollbar",
+    "custom scrollbar angular",
+    "ng custom scrollbar",
+    "scrollbar",
+    "scrollbars",
+    "scroll"
+  ],
   "peerDependencies": {
     "@angular/common": ">=20.0.0",
     "@angular/core": ">=20.0.0",
-    "overlayscrollbars": ">=2.12.0"
+    "overlayscrollbars": "^2.0.0"
   },
   "sideEffects": false
 }

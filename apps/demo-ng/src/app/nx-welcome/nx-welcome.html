@@ -327,7 +327,13 @@
       </div>
     </div>
     <!--  COMMANDS  -->
-    <ng-overlay-scrollbars style="height: 600px; background-color: brown" (osScroll)="logOsScroll($event)" (osInitialized)="logOsInitial($event)" [events]="{scroll: scroll2}">
+    <ng-overlay-scrollbars
+      style="height: 600px; background-color: brown"
+      (osScroll)="onScroll($event)"
+      (osInitialized)="osInitialized($event)"
+      (osDestroyed)="osDestroyed($event)"
+      (osUpdated)="osUpdated($event)"
+      [events]="{scroll: scroll2}">
       <div id="commands" class="rounded shadow" style="height: 200svh">
         <h2>Next steps</h2>
         <p>Here are some things you can do with Nx:</p>

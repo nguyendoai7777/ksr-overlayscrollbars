@@ -50,7 +50,7 @@ export class OverlayScrollbarsComponent implements OnDestroy, AfterViewInit {
 
   private readonly contentRef = viewChild<ElementRef<HTMLDivElement>>('content');
 
-  private readonly osDirective = viewChild('content', {read: OverlayScrollbarsDirective});
+  readonly osDirective = viewChild('content', {read: OverlayScrollbarsDirective});
 
   private readonly targetRef = inject<ElementRef<HTMLElement>>(ElementRef)
 

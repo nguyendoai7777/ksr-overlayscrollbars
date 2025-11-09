@@ -15,36 +15,41 @@ import {
 } from './ng-scrollable.type';
 import { OverlayScrollbarsComponent } from './ng-scrollable.component';
 import { OverlayScrollbarsDirective } from './ng-scrollable.directive';
+import { expect, vi, describe, it } from 'vitest';
 
 @Component({
   selector: 'test-component',
   template: `
     <div
-        ng-overlay-scrollbars
-        [options]="options()"
-        [events]="events()"
-        [defer]="defer()"
-        (osInitialized)="onInitialized($event)"
-        (osUpdated)="onUpdated($event)"
-        (osDestroyed)="onDestroyed($event)"
-        (osScroll)="onScroll($event)"
-        [ngClass]="clazz()"
-        [ngStyle]="style()"
-        #ref
+      ng-overlay-scrollbars
+      [options]="options()"
+      [events]="events()"
+      [defer]="defer()"
+      (osInitialized)="onInitialized($event)"
+      (osUpdated)="onUpdated($event)"
+      (osDestroyed)="onDestroyed($event)"
+      (osScroll)="onScroll($event)"
+      [ngClass]="clazz()"
+      [ngStyle]="style()"
+      #ref
     >
       hello <span>angular</span>
       @if (children() === 0) {
-        <div id="empty">empty</div>
-      }
-      @for (child of [].constructor(children()); track $index) {
-        <section [attr.data-key]="child">hi</section>
+      <div id="empty">empty</div>
+      } @for (child of [].constructor(children()); track $index) {
+      <section [attr.data-key]="child">hi</section>
       }
     </div>
     <button id="add" (click)="add()">add</button>
     <button id="remove" (click)="remove()">remove</button>
   `,
   standalone: true,
-  imports: [OverlayScrollbarsComponent, NgClass, NgStyle, OverlayScrollbarsComponent],
+  imports: [
+    OverlayScrollbarsComponent,
+    NgClass,
+    NgStyle,
+    OverlayScrollbarsComponent,
+  ],
 })
 class TestComponent {
   children = signal(1);
@@ -60,7 +65,7 @@ class TestComponent {
   destroyed?: (...args: any) => void;
   scroll?: (...args: any) => void;
 
-  ref = viewChild('ref', {read: OverlayScrollbarsComponent});
+  ref = viewChild('ref', { read: OverlayScrollbarsComponent });
 
   onInitialized(args: EventListenerArgs['initialized']) {
     this.initialized?.(args);
@@ -97,16 +102,54 @@ class TestComponent {
   imports: [OverlayScrollbarsComponent],
 })
 class TestTagComponent {
-  spanRef = viewChild('span', {read: OverlayScrollbarsComponent});
-  osRef = viewChild('os', {read: OverlayScrollbarsComponent});
+  spanRef = viewChild('span', { read: OverlayScrollbarsComponent });
+  osRef = viewChild('os', { read: OverlayScrollbarsComponent });
 }
+
+/**
+ * Helper: poll until the overlay instance exists and is valid.
+ * - testFixture: ComponentFixture created via TestBed.createComponent(TestComponent)
+ * - timeout: milliseconds (default 3000)
+ */
+async function waitForOsInstance(
+  testFixture: ComponentFixture<any>,
+  timeout = 3000
+) {
+  const start = Date.now();
+  // ensure at least one detectChanges run to kick lifecycle
+  testFixture.detectChanges();
+  while (Date.now() - start < timeout) {
+    // try to read the ref -> instance
+    try {
+      const cmp = testFixture.componentInstance;
+      const ref = typeof cmp.ref === 'function' ? cmp.ref() : cmp.ref ?? null;
+      const inst = ref?.osInstance ? ref.osInstance() : null;
+      if (inst && OverlayScrollbars.valid(inst)) {
+        return inst;
+      }
+    } catch (e) {
+      // ignore and retry
+    }
+    // small delay then rerun change detection
+    // (this lets requestIdleCallback / rAF mocked callbacks run)
+    await new Promise((r) => setTimeout(r, 20));
+    testFixture.detectChanges();
+  }
+  throw new Error('Timed out waiting for OverlayScrollbars instance');
+}
+
 describe('OverlayscrollbarsNgxComponent', () => {
   let component: OverlayScrollbarsComponent;
   let fixture: ComponentFixture<OverlayScrollbarsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OverlayScrollbarsComponent, OverlayScrollbarsDirective, TestComponent, TestTagComponent],
+      imports: [
+        OverlayScrollbarsComponent,
+        OverlayScrollbarsDirective,
+        TestComponent,
+        TestTagComponent,
+      ],
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
 
@@ -128,7 +171,9 @@ describe('OverlayscrollbarsNgxComponent', () => {
 
       testFixture.detectChanges();
 
-      expect(testComponent?.querySelector('[data-overlayscrollbars-initialize]')).toBeTruthy();
+      expect(
+        testComponent?.querySelector('[data-overlayscrollbars-initialize]')
+      ).toBeTruthy();
     });
 
     it('has children', async () => {
@@ -143,7 +188,9 @@ describe('OverlayscrollbarsNgxComponent', () => {
 
       testFixture.detectChanges();
 
-      expect(osElement?.querySelector('span')?.parentElement).toBe(childrenParent);
+      expect(osElement?.querySelector('span')?.parentElement).toBe(
+        childrenParent
+      );
     });
 
     it('handles dynamic children', async () => {
@@ -156,7 +203,9 @@ describe('OverlayscrollbarsNgxComponent', () => {
       const child = children[0];
       const childrenParent = child?.parentElement;
       const addBtn = testComponent.querySelector('#add') as HTMLButtonElement;
-      const removeBtn = testComponent.querySelector('#remove') as HTMLButtonElement;
+      const removeBtn = testComponent.querySelector(
+        '#remove'
+      ) as HTMLButtonElement;
 
       expect(children.length).toBe(1);
       expect(child).toBeTruthy();
@@ -234,6 +283,7 @@ describe('OverlayscrollbarsNgxComponent', () => {
 
       expect(OverlayScrollbars(osElement! as HTMLElement)).toBeUndefined();
 
+      // wait for deferred init (helper or fixed delay)
       await new Promise((r) => setTimeout(r, 2000));
 
       expect(OverlayScrollbars(osElement! as HTMLElement)).toBeDefined();
@@ -280,14 +330,17 @@ describe('OverlayscrollbarsNgxComponent', () => {
     });
   });
 
-  it('ref', () => {
+  it('ref', async () => {
     const testFixture = TestBed.createComponent(TestComponent);
     const testInstance = testFixture.componentInstance;
 
+    // run change detection so ngAfterViewInit schedules init
     testFixture.detectChanges();
 
-    const ref = testInstance.ref()!;
+    // wait until osInstance is created
+    await waitForOsInstance(testFixture);
 
+    const ref = testInstance.ref()!;
     expect(testInstance.ref).toBeDefined();
     expect(typeof ref.osInstance).toBe('function');
     expect(typeof ref.getElement).toBe('function');
@@ -299,10 +352,15 @@ describe('OverlayscrollbarsNgxComponent', () => {
     const testFixture = TestBed.createComponent(TestComponent);
     const testInstance = testFixture.componentInstance;
 
-    testInstance.options.set({ paddingAbsolute: true, overflow: { y: 'hidden' } });
     testFixture.detectChanges();
+    // wait for instance created by deferred init
+    const instance = await waitForOsInstance(testFixture);
 
-    const instance = testInstance.ref()!.osInstance()!;
+    testInstance.options.set({
+      paddingAbsolute: true,
+      overflow: { y: 'hidden' },
+    });
+    testFixture.detectChanges();
 
     const opts = instance.options();
     expect(opts.paddingAbsolute).toBe(true);
@@ -338,17 +396,19 @@ describe('OverlayscrollbarsNgxComponent', () => {
   });
 
   it('events', async () => {
-    const onInitialized = jasmine.createSpy();
-    const onUpdated = jasmine.createSpy();
-    const onUpdated2 = jasmine.createSpy();
+    const onInitialized = vi.fn();
+    const onUpdated = vi.fn();
+    const onUpdated2 = vi.fn();
     const testFixture = TestBed.createComponent(TestComponent);
     const testInstance = testFixture.componentInstance;
 
-    testInstance.events.set({ initialized: onInitialized });
     testFixture.detectChanges();
+    testInstance.events.set({ initialized: onInitialized });
+    // wait for deferred instance
+    const instance = await waitForOsInstance(testFixture);
 
-    const instance = testInstance.ref()!.osInstance()!;
-
+    testFixture.detectChanges();
+    const ev = testInstance.events();
     expect(onInitialized).toHaveBeenCalledTimes(1);
 
     testInstance.events.set({ updated: onUpdated });
@@ -404,41 +464,54 @@ describe('OverlayscrollbarsNgxComponent', () => {
     const testFixture = TestBed.createComponent(TestComponent);
     const testInstance = testFixture.componentInstance;
 
-    const onInitialized = jasmine.createSpy();
-    const onUpdated = jasmine.createSpy();
-    const onDestroyed = jasmine.createSpy();
-    const onScroll = jasmine.createSpy();
+    const onInitialized = vi.fn();
+    const onUpdated = vi.fn();
+    const onDestroyed = vi.fn();
+    const onScroll = vi.fn();
+
 
     testInstance.initialized = onInitialized;
     testInstance.updated = onUpdated;
     testInstance.destroyed = onDestroyed;
     testInstance.scroll = onScroll;
 
+    await waitForOsInstance(testFixture);
     testFixture.detectChanges();
 
     expect(onInitialized).toHaveBeenCalledTimes(1);
-    expect(onInitialized).toHaveBeenCalledWith([jasmine.any(Object)]);
+    expect(onInitialized).toHaveBeenCalledWith([expect.any(Object)]);
 
     expect(onUpdated).toHaveBeenCalledTimes(1);
-    expect(onUpdated).toHaveBeenCalledWith([jasmine.any(Object), jasmine.any(Object)]);
+    expect(onUpdated).toHaveBeenCalledWith([
+      expect.any(Object),
+      expect.any(Object),
+    ]);
 
     expect(onDestroyed).not.toHaveBeenCalled();
     expect(onScroll).not.toHaveBeenCalled();
 
-    (testFixture.nativeElement as HTMLElement).querySelectorAll('*').forEach((e) => {
-      e.dispatchEvent(new Event('scroll'));
-    });
+    (testFixture.nativeElement as HTMLElement)
+      .querySelectorAll('*')
+      .forEach((e) => {
+        e.dispatchEvent(new Event('scroll'));
+      });
 
     expect(onDestroyed).not.toHaveBeenCalled();
 
     expect(onScroll).toHaveBeenCalledTimes(1);
-    expect(onScroll).toHaveBeenCalledWith([jasmine.any(Object), jasmine.any(Event)]);
+    expect(onScroll).toHaveBeenCalledWith([
+      expect.any(Object),
+      expect.any(Event),
+    ]);
 
     testFixture.destroy();
     testFixture.detectChanges();
 
     expect(onDestroyed).toHaveBeenCalledTimes(1);
-    expect(onDestroyed).toHaveBeenCalledWith([jasmine.any(Object), jasmine.any(Boolean)]);
+    expect(onDestroyed).toHaveBeenCalledWith([
+      expect.any(Object),
+      expect.any(Boolean),
+    ]);
   });
 
   it('has correct tags', async () => {

@@ -4,6 +4,7 @@
   "description": "custom scrollbar for Angular",
   "author": "nguyendoai7777",
   "license": "MIT",
+  "homepage": "https://github.com/nguyendoai7777/ksr-overlayscrollbars/tree/master/libs/ng-scrollable",
   "repository": {
     "type": "git",
     "url": "https://github.com/nguyendoai7777/ksr-overlayscrollbars.git",

@@ -4,16 +4,18 @@ This library is a fork of KingSora's `overlayscrollbars-ngx`.
 supports angular >= 20, the purpose is to have a transition to new api - signal base, zoneless, standalone by default
 
 Reference resource:     
-[OverlayScrollbars](https://github.com/KingSora/OverlayScrollbars?tab=readme-ov-file#getting-started)       
+[OverlayScrollbars](https://github.com/KingSora/OverlayScrollbars?tab=readme-ov-file#getting-started)    
 [OverlayScrollbars for Angular](https://github.com/KingSora/OverlayScrollbars/tree/master/packages/overlayscrollbars-ngx)
 
-## Installation
+sponsor for [KingSora](https://www.paypal.me/ReneHaas)
+
+### Installation
 
 ```shell
 npm i ng-scrollable
 ```
 
-## Usage
+### Usage
 The first step is to import the CSS file into your app:    
 global css file `style.[css|scss|...]`
 ```css
@@ -21,7 +23,7 @@ global css file `style.[css|scss|...]`
 ```
 or can import in `angular.json/targets/build/styles`
 
-## Component
+### Component
 
 The main entry point is the `OverlayScrollbarsComponent` which can be used in your application as a component:
 
@@ -36,23 +38,56 @@ export class YourComponent {}
 ```
 
 The component can be used with two different selectors:
-`your.component.html`
 ```html
-    <ng-scrollable
-      [defer]="true"
-      [options]="{ scrollbars: { autoHide: 'scroll' } }"
-    >
-      The tag isn't important
-    </ng-scrollable>
-    
-    <section
-      ng-scrollable
-      [defer]="true"
-      [options]="{ scrollbars: { autoHide: 'scroll' } }"
-    >
-      Choose the tag
-    </section>
+<!--your.component.html-->
+<ng-scrollable
+  [defer]="true"
+  [options]="{ scrollbars: { autoHide: 'scroll' } }"
+>
+  The tag isn't important
+</ng-scrollable>
+
+<div
+  ng-scrollable
+  [defer]="true"
+  [options]="{ scrollbars: { autoHide: 'scroll' } }"
+>
+  Choose the tag
+</div>
 ```
+
+### Window init
+
+This configuration is intended to allow scrolling on the `body` tag to solve `reposition` issues when using `material cdk overlay` (for example dropdown/select panel...)
+```ts
+/* app.config.ts */
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+} from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { appRoutes } from './app.routes';
+import { PartialOptions, provideWindowScroll } from 'ng-scrollable';
+
+const _scrollConfig: PartialOptions ={
+  scrollbars: {
+    autoHide: 'leave',
+  },
+}
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideWindowScroll(_scrollConfig), /* provide this  */
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
+    provideRouter(appRoutes),
+  ],
+};
+
+```
+
+
 The component accepts all properties of regular elements such as `div` and `span`.
 Additionally it has custom optional properties:
 
@@ -62,22 +97,11 @@ Additionally it has custom optional properties:
 
 > __Note__: Its **highly recommended** to use the `defer` option whenever possible to defer the initialization to a browser's idle period.
 
-## Events
+### Events
 
 Additionally to the `events` property the `OverlayScrollbarsComponent` emits "native" Angular events. To prevent name collisions with DOM events the events have a `os` prefix.
 
 > __Note__: It doesn't matter whether you use the `events` property or the Angular events or both.
-
-```html
-<!-- your.component.html -->
-<div
-  overlay-scrollbars
-  (osInitialized)="onInitialized($event)"
-  (osUpdated)="onUpdated($event)"
-  (osDestroyed)="onDestroyed($event)"
-  (osScroll)="onScroll($event)"
-></div>
-```
 
 ```ts
 import { OverlayScrollbarDestroyed, OverlayScrollbarInitialized, OverlayScrollbarsComponent, OverlayScrollbarScroll, OverlayScrollbarUpdated } from 'ng-scrollable';
@@ -90,11 +114,21 @@ export class YourComponent {
   protected osInitialized($event: OverlayScrollbarInitialized) {}
   protected osDestroyed($event: OverlayScrollbarDestroyed) {}
   protected osUpdated($event: OverlayScrollbarUpdated) {}
-  // or
 }
 ```
 
-## Ref
+```html
+<!-- your.component.html -->
+<div
+  ng-scrollable
+  (osInitialized)="onInitialized($event)"
+  (osUpdated)="onUpdated($event)"
+  (osDestroyed)="onDestroyed($event)"
+  (osScroll)="onScroll($event)"
+></div>
+```
+
+### Ref
 
 The `ref` of the `OverlayScrollbarsComponent` will give you an object with which you can access the OverlayScrollbars `instance` and the root `element` of the component.  
 The ref object has two properties:
@@ -102,7 +136,7 @@ The ref object has two properties:
 - `osInstance`: a function which returns the OverlayScrollbars instance.
 - `getElement`: a function which returns the root element.
 
-## Directive
+### Directive
 
 In case the `OverlayScrollbarsComponent` is not enough, you can also use the `OverlayScrollbarsDirective` directive:
 
@@ -134,15 +168,6 @@ The `OverlayScrollbarsDirective` exposes two functions:
 - `osInitialize` takes one argument which is the `InitializationTarget`.
 - `osInstance` returns the current OverlayScrollbars instance or `null` if not initialized.
 
-## License
+### License
 
 MIT
-
-
-## Running unit tests
-
-Run `npm run test` to execute the unit tests.
-
-```shell
-npm run test
-```

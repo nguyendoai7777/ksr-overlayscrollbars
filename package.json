@@ -60,5 +60,8 @@
   },
   "nx": {
     "includedScripts": []
+  },
+  "publishConfig": {
+    "registry": "http://localhost:4873"
   }
 }

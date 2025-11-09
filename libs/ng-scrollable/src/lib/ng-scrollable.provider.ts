@@ -19,12 +19,12 @@ export class OverlayScrollbarInitWithBody {
 
 let _instance: OverlayScrollbarInitWithBody | null = null;
 
+
 /**
  * @usage apply scrollbar for body
  * @description this function resolved problem when use overlay cdk in case reposition some widget
- *
  * */
-export const provideInitOverlayScrollbarWithBody = (
+export const provideWindowScroll = (
   options: PartialOptions = {},
   eventListeners?: EventListeners
 ) => {

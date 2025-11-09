@@ -18,7 +18,7 @@ const mergeEventListeners = (emits: EventListeners, events: EventListeners) =>
   );
 
 @Component({
-  selector: 'ng-overlay-scrollbars, [ng-overlay-scrollbars]',
+  selector: 'ng-scrollable, [ng-scrollable]',
   standalone: true,
   imports: [OverlayScrollbarsDirective],
   host: { 'data-overlayscrollbars-initialize': '' },

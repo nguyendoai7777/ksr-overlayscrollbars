@@ -1,4 +1,5 @@
-import type {EventListenerArgs, EventListeners, PartialOptions} from 'overlayscrollbars';
+import type {EventListenerArgs, EventListeners, PartialOptions as _PO} from 'overlayscrollbars';
+export type PartialOptions = _PO;
 
 export type OverlayScrollbarEventListeners = EventListeners | false | null;
 export type OverlayScrollbarPartialOptions = PartialOptions | false | null;

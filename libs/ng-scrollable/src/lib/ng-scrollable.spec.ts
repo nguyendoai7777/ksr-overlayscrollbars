@@ -1,18 +1,9 @@
-import {
-  Component,
-  provideZonelessChangeDetection,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, provideZonelessChangeDetection, signal, viewChild } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import type { EventListenerArgs } from 'overlayscrollbars';
 import { OverlayScrollbars } from 'overlayscrollbars';
 import { NgClass, NgStyle } from '@angular/common';
-import {
-  OverlayScrollbarDeferOption,
-  OverlayScrollbarEventListeners,
-  OverlayScrollbarPartialOptions,
-} from './ng-scrollable.type';
+import { OverlayScrollbarDeferOption, OverlayScrollbarEventListeners, OverlayScrollbarPartialOptions } from './ng-scrollable.type';
 import { OverlayScrollbarsComponent } from './ng-scrollable.component';
 import { OverlayScrollbarsDirective } from './ng-scrollable.directive';
 import { expect, vi, describe, it } from 'vitest';
@@ -21,7 +12,7 @@ import { expect, vi, describe, it } from 'vitest';
   selector: 'test-component',
   template: `
     <div
-      ng-overlay-scrollbars
+      ng-scrollable
       [options]="options()"
       [events]="events()"
       [defer]="defer()"
@@ -44,12 +35,7 @@ import { expect, vi, describe, it } from 'vitest';
     <button id="remove" (click)="remove()">remove</button>
   `,
   standalone: true,
-  imports: [
-    OverlayScrollbarsComponent,
-    NgClass,
-    NgStyle,
-    OverlayScrollbarsComponent,
-  ],
+  imports: [OverlayScrollbarsComponent, NgClass, NgStyle, OverlayScrollbarsComponent],
 })
 class TestComponent {
   children = signal(1);
@@ -95,8 +81,8 @@ class TestComponent {
 @Component({
   selector: 'test-tag',
   template: `
-    <span ng-overlay-scrollbars #span>span</span>
-    <ng-overlay-scrollbars #os>span</ng-overlay-scrollbars>
+    <span ng-scrollable #span>span</span>
+    <ng-scrollable #os>span</ng-scrollable>
   `,
   standalone: true,
   imports: [OverlayScrollbarsComponent],
@@ -111,10 +97,7 @@ class TestTagComponent {
  * - testFixture: ComponentFixture created via TestBed.createComponent(TestComponent)
  * - timeout: milliseconds (default 3000)
  */
-async function waitForOsInstance(
-  testFixture: ComponentFixture<any>,
-  timeout = 3000
-) {
+async function waitForOsInstance(testFixture: ComponentFixture<any>, timeout = 3000) {
   const start = Date.now();
   // ensure at least one detectChanges run to kick lifecycle
   testFixture.detectChanges();
@@ -144,12 +127,7 @@ describe('OverlayscrollbarsNgxComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        OverlayScrollbarsComponent,
-        OverlayScrollbarsDirective,
-        TestComponent,
-        TestTagComponent,
-      ],
+      imports: [OverlayScrollbarsComponent, OverlayScrollbarsDirective, TestComponent, TestTagComponent],
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
 
@@ -171,9 +149,7 @@ describe('OverlayscrollbarsNgxComponent', () => {
 
       testFixture.detectChanges();
 
-      expect(
-        testComponent?.querySelector('[data-overlayscrollbars-initialize]')
-      ).toBeTruthy();
+      expect(testComponent?.querySelector('[data-overlayscrollbars-initialize]')).toBeTruthy();
     });
 
     it('has children', async () => {
@@ -188,9 +164,7 @@ describe('OverlayscrollbarsNgxComponent', () => {
 
       testFixture.detectChanges();
 
-      expect(osElement?.querySelector('span')?.parentElement).toBe(
-        childrenParent
-      );
+      expect(osElement?.querySelector('span')?.parentElement).toBe(childrenParent);
     });
 
     it('handles dynamic children', async () => {
@@ -203,9 +177,7 @@ describe('OverlayscrollbarsNgxComponent', () => {
       const child = children[0];
       const childrenParent = child?.parentElement;
       const addBtn = testComponent.querySelector('#add') as HTMLButtonElement;
-      const removeBtn = testComponent.querySelector(
-        '#remove'
-      ) as HTMLButtonElement;
+      const removeBtn = testComponent.querySelector('#remove') as HTMLButtonElement;
 
       expect(children.length).toBe(1);
       expect(child).toBeTruthy();
@@ -469,7 +441,6 @@ describe('OverlayscrollbarsNgxComponent', () => {
     const onDestroyed = vi.fn();
     const onScroll = vi.fn();
 
-
     testInstance.initialized = onInitialized;
     testInstance.updated = onUpdated;
     testInstance.destroyed = onDestroyed;
@@ -482,36 +453,25 @@ describe('OverlayscrollbarsNgxComponent', () => {
     expect(onInitialized).toHaveBeenCalledWith([expect.any(Object)]);
 
     expect(onUpdated).toHaveBeenCalledTimes(1);
-    expect(onUpdated).toHaveBeenCalledWith([
-      expect.any(Object),
-      expect.any(Object),
-    ]);
+    expect(onUpdated).toHaveBeenCalledWith([expect.any(Object), expect.any(Object)]);
 
     expect(onDestroyed).not.toHaveBeenCalled();
     expect(onScroll).not.toHaveBeenCalled();
 
-    (testFixture.nativeElement as HTMLElement)
-      .querySelectorAll('*')
-      .forEach((e) => {
-        e.dispatchEvent(new Event('scroll'));
-      });
+    (testFixture.nativeElement as HTMLElement).querySelectorAll('*').forEach((e) => {
+      e.dispatchEvent(new Event('scroll'));
+    });
 
     expect(onDestroyed).not.toHaveBeenCalled();
 
     expect(onScroll).toHaveBeenCalledTimes(1);
-    expect(onScroll).toHaveBeenCalledWith([
-      expect.any(Object),
-      expect.any(Event),
-    ]);
+    expect(onScroll).toHaveBeenCalledWith([expect.any(Object), expect.any(Event)]);
 
     testFixture.destroy();
     testFixture.detectChanges();
 
     expect(onDestroyed).toHaveBeenCalledTimes(1);
-    expect(onDestroyed).toHaveBeenCalledWith([
-      expect.any(Object),
-      expect.any(Boolean),
-    ]);
+    expect(onDestroyed).toHaveBeenCalledWith([expect.any(Object), expect.any(Boolean)]);
   });
 
   it('has correct tags', async () => {

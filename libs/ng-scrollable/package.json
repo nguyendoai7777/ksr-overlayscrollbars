@@ -1,6 +1,6 @@
 {
   "name": "ng-scrollable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "custom scrollbar for Angular",
   "author": "nguyendoai7777",
   "license": "MIT",
@@ -24,6 +24,6 @@
   },
   "sideEffects": false,
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   }
 }

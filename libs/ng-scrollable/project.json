@@ -39,9 +39,6 @@
       "options": {
         "reportsDirectory": "../../coverage/libs/ng-scrollable"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

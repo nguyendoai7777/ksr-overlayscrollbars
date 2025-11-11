@@ -15,8 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "ng-scrollable": ["libs/ng-scrollable/src/index.ts"]
-    }
+      "ng-scrollable": ["libs/ng-scrollable/src/index.ts"],
+      "rx-scrollable": ["libs/react-scrollable/src/index.ts"]
+    },
   },
   "exclude": ["node_modules", "tmp"]
 }

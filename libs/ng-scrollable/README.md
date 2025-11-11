@@ -68,7 +68,7 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { PartialOptions, provideWindowScroll } from 'ng-scrollable';
+import { PartialOptions, provideClient } from 'ng-scrollable';
 
 const _scrollConfig: PartialOptions ={
   scrollbars: {
@@ -78,7 +78,7 @@ const _scrollConfig: PartialOptions ={
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideWindowScroll(_scrollConfig), /* provide this  */
+    provideClient(_scrollConfig), /* provide this  */
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(appRoutes),
